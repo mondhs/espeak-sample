@@ -18,9 +18,13 @@ Sample uses header files from source dir(<ESPEAK_SRC_DIR>). Example where source
  * g++ -g -I.  -I <ESPEAK_SRC_DIR> sampleSpeak.cpp -lportaudio -lespeak -o sampleSpeak
 * Run: ./speak
 
-## audacityLabelSpeak.cpp:
+## audacityLabelSpeak.cpp
 * Shows how to write callback function.
 * It stores generated audio file to wav and phoneme transcriptions. 
 * Compile(be sure you replace  <ESPEAK_SRC_DIR>): 
  * g++ -g -I. -I <ESPEAK_SRC_DIR> audacityLabelSpeak.cpp -lportaudio -lespeak -o audacityLabelSpeak
 * Run: ./audacityLabelSpeak
+
+## talkingClockEspeak.py
+* Shows how to call espeak from python
+* Run: ./talkingClockEspeak.py
