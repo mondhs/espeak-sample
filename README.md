@@ -9,6 +9,10 @@ Before test you need check out code and build from: https://github.com/mondhs/es
 
 Sample uses header files from source dir(<ESPEAK_SRC_DIR>). Example where source should be located: /home/user/src/espeak/src
 
+# Sample output
+
+Directory output contains some code sample outputs. each output contains original script name and only extension is changed.
+
 # Files
 
 ## sampleSpeak.cpp

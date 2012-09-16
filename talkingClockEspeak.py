@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Talking clock in Lithuanian language. 
-# Script generates time representation into string and execute espeak command in a subshell
-# AUTHOR: Mondhs Bus
-# LICENSE: GPLv2
 
 '''
-talkingClockEspeak.py -- demo each of the English espeak voices
+talkingClockEspeak.py -- demo Talking clock in Lithuanian language. 
+Script generates time representation into string and execute espeak command in a subshell
+AUTHOR: Mondhs Bus
+LICENSE: GPLv2
 based on http://johntellsall.blogspot.com/2011/09/i-love-python-espeak-speech-synthesizer.html	
 Lithuaninan lessons: http://www.slic.org.au/Language/less_23.swf
 '''

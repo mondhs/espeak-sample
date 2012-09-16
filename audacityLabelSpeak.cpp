@@ -26,8 +26,8 @@ int samplerate;
 //parameters used by this code
 char Voice[] = {"mb-lt1"};
 char text[25] = {"skaitys Lietuvos astovas"};
-char fileName[] = {"/tmp/test/events1.phn.txt"};
-char wavefile[] = {"/tmp/test/events1.wav"};
+char fileName[] = {"/tmp/audacityLabelSpeak.phn.txt"};
+char wavefile[] = {"/tmp/audacityLabelSpeak.au"};
 FILE *f_events = NULL;
 FILE *f_wavfile = NULL;
 int gapBetweenWords=10;
@@ -104,7 +104,7 @@ int main(int argc, char* argv[] )
     espeak_SetVoiceByName(Voice);
     Size = strlen(text)+1;    
     //Saying
-    printf("Saying  '%s' to %s",text, fileName);
+    printf("Saying  '%s' to %s and %s",text, fileName, wavefile);
     espeak_Synth( text, Size, position, position_type, end_position, flags,
     unique_identifier, user_data );
     espeak_Synchronize( );
