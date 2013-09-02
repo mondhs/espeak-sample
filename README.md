@@ -29,6 +29,24 @@ Directory output contains some code sample outputs. each output contains origina
  * g++ -g -I. -I <ESPEAK_SRC_DIR> audacityLabelSpeak.cpp -lportaudio -lespeak -o audacityLabelSpeak
 * Run: ./audacityLabelSpeak
 
+ 
 ## talkingClockEspeak.py
 * Shows how to call espeak from python
 * Run: ./talkingClockEspeak.py
+
+## Code Analysis
+
+* Mbrola Events are triggered: 
+ * speak_lib#espeak_Synth()
+ * ->speak_lib#sync_espeak_Synth()
+ * ->speak_lib#Synthesize(text)
+ * ->synthesize#Generate(phoneme_list)
+ * ->synth_mbrola#MbrolaGenerate(phoneme_list===plist)
+ * ->synth_mbrola#MbrolaTranslate()
+ * ->synthesize#DoPhonemeMarker()
+* Mbrola phoneme generation:
+ * speak_lib#Synthesize(text)
+ * ->synthesize#SpeakNextClause(text===p_text)(What is this: phoneme_callback)
+ * ->TranslateClause(p_text)
+ * ... ->translate#MakePhonemeList(){phlist = phoneme_list}
+* tranlator created in translate#LoadVoices()

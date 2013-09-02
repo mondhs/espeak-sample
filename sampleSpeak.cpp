@@ -5,7 +5,7 @@
 */
 #include <string.h>
 #include <malloc.h>
-#include <../src/speak_lib.h>
+#include <./src/speak_lib.h>
 
 
 
@@ -31,12 +31,12 @@ espeak_PARAMETER Parm;
    espeak_Initialize() Returns: sample rate in Hz, or -1 (EE_INTERNAL_ERROR).
 */
 
-char Voice[] = {"default"};
+char Voice[] = {"lt+klatt2"};
 /* 
     Voice: Refer to speak_lib.h 
 */
 
-char text[20] = {"Hello World!"};
+char text[20] = {"Labas Regina 1"};
 unsigned int Size,position=0, end_position=0, flags=espeakCHARS_AUTO, *unique_identifier;
 
 /*    
@@ -91,7 +91,15 @@ int main(int argc, char* argv[] )
     output = AUDIO_OUTPUT_PLAYBACK;
     int I, Run = 1, L;    
     espeak_Initialize(output, Buflength, path, Options ); 
-    espeak_SetVoiceByName(Voice);
+    //espeak_SetVoiceByName(Voice);
+    const char *langNativeString = "lt"; //Default to US English
+    espeak_VOICE voice;
+	memset(&voice, 0, sizeof(espeak_VOICE)); // Zero out the voice first
+	voice.languages = langNativeString;
+	voice.name = "klatt";
+	voice.variant = 2;
+	voice.gender = 1;
+	espeak_SetVoiceByProperties(&voice);
     Size = strlen(text)+1;    
     printf("Saying  '%s'",text);
     espeak_Synth( text, Size, position, position_type, end_position, flags,

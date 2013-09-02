@@ -1,5 +1,5 @@
 /**
- * TITLE: Callback implementation for espeak to store generated speech in wav file 
+ * TITLE: bulk wav generator 
  * and phoneme transcription(in audacity format).
  * AUTHOR: Mondhs Bus
  * LICENSE: GPLv2
@@ -14,23 +14,24 @@ espeak_POSITION_TYPE position_type;
 espeak_AUDIO_OUTPUT output;
 char *path=NULL;
 void* user_data;
-unsigned int Size, position=0,end_position=0, flags=espeakCHARS_AUTO, *unique_identifier;
+unsigned int Size, position=0,end_position=0, synth_flags=espeakCHARS_AUTO, *unique_identifier;
 
 
 // important settings as without this it would not get notification on phoneme activity from espeak
 int Options=espeakINITIALIZE_PHONEME_EVENTS;
 unsigned int samples_total = 0;
 unsigned int previous_position=0;
+const char *previous_word;
 int samplerate;
+int gapBetweenWords = 20;
 
 //parameters used by this code
 char Voice[] = {"mb-lt1"};
-char text[] = {"trijų Baltijos valstybių vardu pranešimą skaitys Lietuvos atstovas"};
 char fileName[] = {"/tmp/audacityLabelSpeak.phn.txt"};
-char wavefile[] = {"/tmp/audacityLabelSpeak.au"};
+char wavefile[] = {"stdout"};
 FILE *f_events = NULL;
 FILE *f_wavfile = NULL;
-int gapBetweenWords=20;
+
 
 
 
@@ -48,29 +49,14 @@ static void CloseWavFile();
  * Callback function is invoked from espeak lib and store 
  * audio and phoneme level transcriptions to files 
  */
-int WavLabelSynthCallback(short *wav, int numsamples, espeak_EVENT *events)
+int WavSynthCallback(short *wav, int numsamples, espeak_EVENT *events)
 {//====================================================================
 	int type;
 	//some wav activity.
-	if(wav == NULL)
-	{
+	if(wav == NULL){
 		CloseWavFile();
 		return(0);
 	}
-	//write phoneme transcribtion to file
-	f_events = fopen(fileName,"a");
-	while((type = events->type) != 0){
-		if(events->type == espeakEVENT_SAMPLERATE){
-			samplerate = events->id.number;
-		}else if(type==espeakEVENT_PHONEME){
-			const char *word = WordToString(events->id.number);
-			fprintf(f_events,"%4.3f\t%4.3f\t%s\n", (float)previous_position/1000, (float)events->audio_position/1000,word );  //old version, only 4 characters bytes
-			previous_position=events->audio_position;
-		}
-		events++;
-	}
-	fclose(f_events);
-	
 	
 	//Open wave file if it is not open
 	if(f_wavfile == NULL){
@@ -86,30 +72,80 @@ int WavLabelSynthCallback(short *wav, int numsamples, espeak_EVENT *events)
 	return(0);
 }
 
-int main(int argc, char* argv[] ) 
-{
+int TxtSynthCallback(short *wav, int numsamples, espeak_EVENT *events)
+{//====================================================================
+	int type;
+		
+	//write phoneme transcribtion to file
+	f_events = stdout;
+	while((type = events->type) != 0){
+		if(events->type == espeakEVENT_SAMPLERATE){
+			samplerate = events->id.number;
+		}else if(type==espeakEVENT_PHONEME){
+			const char *word = WordToString(events->id.number);
+			fprintf(f_events,"%4.3f\t%4.3f\t%s\n", (float)previous_position/1000, (float)events->audio_position/1000,word );  
+			previous_position=events->audio_position;
+			previous_word=word;
+		}
+		events++;
+	}
 	
+	return(0);
+}
+
+/**
+ * Main 
+ */
+int main(int argc, char* argv[] ){
+	char GENERATION_TYPE_TXT[] = "txt";
+	char GENERATION_TYPE_WAV[] = "wav";
+	char generation_type[3];
+	if(argc == 2 ){
+		char *aGenerationType = argv[1];
+		strcpy(generation_type, aGenerationType);
+	}else{
+		printf("argument required:  [wav|txt]");
+		return 1;
+	}
 	f_events = fopen(fileName,"w");
-	fprintf(f_events,"#Audacity format label format: <start_in_sec>\t<end_in_sec>\t<segment_labels>\n");
 	fclose(f_events);
 	
-	//AUDIO_OUTPUT_SYNCHRONOUS to store and AUDIO_OUTPUT_PLAYBACK to play
     output = AUDIO_OUTPUT_SYNCHRONOUS;
     espeak_Initialize(output, 0, path, Options ); 
     espeak_SetParameter(espeakWORDGAP,gapBetweenWords,0);
     
+    
     //set call back
-    espeak_SetSynthCallback(WavLabelSynthCallback);
+    if(strcmp(GENERATION_TYPE_WAV,generation_type) == 0){
+		
+		espeak_SetSynthCallback(WavSynthCallback);
+	}else if(strcmp(GENERATION_TYPE_TXT,generation_type) == 0){
+		espeak_SetSynthCallback(TxtSynthCallback);
+	}
     
     espeak_SetVoiceByName(Voice);
-    Size = strlen(text)+1;    
     //Saying
-    printf("Saying  '%s' to %s and %s",text, fileName, wavefile);
-    espeak_Synth( text, Size, position, position_type, end_position, flags,
-    unique_identifier, user_data );
-    espeak_Synchronize( );
+	int max = 1000;
+	char *p_text = (char *)malloc(max);
+
+	
+	int ix = 0;
+	while(!feof(stdin)){
+		p_text[ix++] = fgetc(stdin);
+		if(ix >= (max-1)){
+			max += 1000;
+			p_text = (char *)realloc(p_text,max);
+			printf("\n:loop %s\n", p_text); 
+		}
+		
+	}
+	if(ix > 0){
+		p_text[ix-1] = 0;
+		espeak_Synth(p_text,ix+1,0,POS_CHARACTER,0,synth_flags,NULL,NULL);
+	}
+
     //Done
-    printf("\n:Done\n"); 
+    //printf("\n:Done\n"); 
     return 0;
 }
 
