@@ -36,7 +36,7 @@ char Voice[] = {"lt+klatt2"};
     Voice: Refer to speak_lib.h 
 */
 
-char text[20] = {"Labas Regina 1"};
+char text[30] = {"Labas. Šauk. Laikas. Taika"};
 unsigned int Size,position=0, end_position=0, flags=espeakCHARS_AUTO, *unique_identifier;
 
 /*    
