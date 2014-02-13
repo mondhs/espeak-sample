@@ -34,6 +34,10 @@ Directory output contains some code sample outputs. each output contains origina
 * Shows how to call espeak from python
 * Run: ./talkingClockEspeak.py
 
+## sampleMbrolaSpeak.cpp
+
+* Shows how to write simple cpp code to call espeak with Mbrola voice.
+
 ## Code Analysis
 
 * Mbrola Events are triggered: 
