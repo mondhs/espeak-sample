@@ -41,7 +41,13 @@ Directory output contains some code sample outputs. each output contains origina
  * g++ -g -I.  -I <ESPEAK_SRC_DIR> sampleSpeak.cpp -lportaudio -lespeak -o sampleSpeak
  * e.g g++ -g -I.  -I ../espeak sampleMbrolaSpeak.cpp -lportaudio -lespeak -o sampleMbrolaSpeak
 
+# Other examples
+
+* ```espeak -v lt -s120 -k20   -f sample.txt```
+* ```espeak -v mb-lt1 -s120 -k20   -f sample.txt```
+
 ## Code Analysis
+
 
 * Mbrola Events are triggered: 
  * speak_lib#espeak_Synth()
