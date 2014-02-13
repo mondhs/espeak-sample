@@ -37,6 +37,9 @@ Directory output contains some code sample outputs. each output contains origina
 ## sampleMbrolaSpeak.cpp
 
 * Shows how to write simple cpp code to call espeak with Mbrola voice.
+* Compile(be sure you replace  <ESPEAK_SRC_DIR>): 
+ * g++ -g -I.  -I <ESPEAK_SRC_DIR> sampleSpeak.cpp -lportaudio -lespeak -o sampleSpeak
+ * e.g g++ -g -I.  -I ../espeak sampleMbrolaSpeak.cpp -lportaudio -lespeak -o sampleMbrolaSpeak
 
 ## Code Analysis
 
